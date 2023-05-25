@@ -64,7 +64,6 @@ def do_run(acquisition, seed, rep):
     bioactivity_model = 'rf_logp'
     bioactivity_identifier = bioactivity_model + '_' + jobid
     initial_model_path = f'/home/klgx638/Projects/reinvent-hitl-calibration/logp_model/{bioactivity_model}_classifier_24.pkl'
-    #human_identifier = human_model + '_' + str(jobid)
 
     # --------- change these path variables as required
     reinvent_dir = os.path.expanduser("/home/klgx638/Projects/reinventcli")
@@ -79,10 +78,8 @@ def do_run(acquisition, seed, rep):
     # load background training data for the bioactivity model
     #drd2_train = pd.read_csv("data/drd2/ECFP_counts_train_oracle.csv", index_col=0)
     train = pd.read_csv("data/logp/train_classif_24.csv", index_col=0)
-    x_train = train.iloc[:,2:-2] #for classif
+    x_train = train.iloc[:,2:-2]
     y_train = train.Label.values
-    #x_train = train.iloc[:,2:-1].values #for regression
-    #y_train = train.oracle.values
     sample_weight = np.array([1. for i in range(len(x_train))])
     print("Loading backrgound data.")
     print("Train features : ", x_train.shape)
@@ -211,22 +208,7 @@ def do_run(acquisition, seed, rep):
 
             print(f"Feedback idx at iteration {REINVENT_iteration}, {t}: {new_query}")
             print(f"Number of accepted molecules at iteration {REINVENT_iteration}, {t}: {new_y.count(1)}")
-            #print(f"Number of accepted molecules at iteration {REINVENT_iteration}, {t}: {n_accept[t]}")
-
-            #if greedy or pure_random:
-            # keep only rejected molecules
-            #    if new_y.count(1) > 0: # if there are accepted molecules we will not use them as new training points
-            #        new_y_tokeep = []
-            #        new_query_tokeep = []
-            #        for i, val in enumerate(new_y):
-            #            if val == 0: # molecule is rejected, keep it
-            #                new_y_tokeep.append(val)
-            #                new_query_tokeep.append(new_query[i])
-            #    else: # we keep all           
-            #        new_y_tokeep = new_y
-            #        new_query_tokeep = new_query
-
-            #else: # for uncertainty sampling we keep all molecules for retraining
+            
             new_y_tokeep = new_y
             new_query_tokeep = new_query
             
@@ -288,18 +270,6 @@ def do_run(acquisition, seed, rep):
 
         # Run REINVENT again
         #READ_ONLY = False
-
-    # Plot the final result
-    #r = np.arange(len(expert_score))
-    #m_score = [np.mean(expert_score[i]) for i in r]
-    #plt.plot(r, m_score)
-    #plt.title("Performance of {}".format(acquisition))
-    #plt.ylabel("Average of modified QED score in REINVENT output")
-    #plt.xlabel("Rounds")
-    #plt.savefig(os.path.join(output_dir, '{}_mQED_{}.png'.format(jobid, acquisition)), bbox_inches='tight')
-    #plt.close()
-
-    #TODO: predict bioactivity of the high-scoring molecules using oracle model
     
 
 if __name__ == "__main__":
