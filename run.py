@@ -36,20 +36,8 @@ def do_run(acquisition, seed, rep):
     SUBSAMPLE = True # Reduce the size of the pool of unlabeled molecules to reduce computation time
     ##############################
 
-    pure_random = False
-    greedy = False
-    unc = False
-    
-    if acquisition == "random":
-        pure_random = True
-        jobid = 'demo_rf_logp_classif_pureRandom_noise0.1'
-    if acquisition == "greedy":
-        greedy = True
-        jobid = 'demo_rf_logp_classif_greedy_noise0.1'
-    if acquisition == "qbc":
-        unc = True
-        jobid = 'demo_rf_logp_classif_qbc_noise0.1'
-    jobname = "fine-tune logp model"
+    jobid = f'demo_{acquisition}'
+    jobname = "fine-tune predictive component"
 
     np.random.seed(seed)
     rng = default_rng(seed)
