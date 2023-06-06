@@ -5,6 +5,7 @@ from rdkit import Chem
 from random import sample
 
 from utils import fingerprints_from_mol
+from scripts.simulated_expert_delta import logPEvaluationModel
 
 def local_idx_to_fulldata_idx(N, selected_feedback, idx):
     all_idx = np.arange(N)
@@ -26,6 +27,7 @@ def uncertainty_sampling(N, n, smiles, fit, selected_feedback, is_counts = True,
     if not is_counts:
         fps = fingerprints_from_mol(mols, type = 'binary')
     estimated_unc = fit._uncertainty(fps)
+    print(estimated_unc)
     query_idx = np.argsort(estimated_unc)[::-1][:n]
     return local_idx_to_fulldata_idx(N, selected_feedback, query_idx)
 
@@ -44,6 +46,17 @@ def exploitation(N, n, smiles, fit, selected_feedback, is_counts = True, rng = N
     if not is_counts:
         fps = fingerprints_from_mol(mols, type = 'binary')
     score_pred = fit.predict_proba(fps)[:,1]
+    query_idx = np.argsort(score_pred)[::-1][:n] # get the n highest
+    return local_idx_to_fulldata_idx(N, selected_feedback, query_idx)
+
+def exploitation_reg(N, n, smiles, fit, selected_feedback, is_counts = True, rng = None, t = None):
+    mols = [Chem.MolFromSmiles(s) for s in smiles]
+    fps = fingerprints_from_mol(mols)
+    if not is_counts:
+        fps = fingerprints_from_mol(mols, type = 'binary')
+    evaluation_model = logPEvaluationModel()
+    values = fit.predict(fps)
+    score_pred = [evaluation_model.utility(v, low = 2, high = 4) for v in values]
     query_idx = np.argsort(score_pred)[::-1][:n] # get the n highest
     return local_idx_to_fulldata_idx(N, selected_feedback, query_idx)
 
@@ -89,6 +102,8 @@ def select_query(N, n, smiles, fit, selected_feedback, acquisition = 'random', r
         acq = vote_entropy_qbc
     elif acquisition == 'greedy':
         acq = exploitation
+    elif acquisition == 'greedy_regression':
+        acq = exploitation_reg
     elif acquisition == 'random':
         acq = random_selection
     else:
