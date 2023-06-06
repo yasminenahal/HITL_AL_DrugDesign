@@ -7,9 +7,9 @@ def write_REINVENT_config(reinvent_dir, reinvent_env, output_dir, conf_filename,
 
     diversity_filter = {
     "name": "IdenticalMurckoScaffold",
-    "bucket_size": 10000,
-    "minscore": 0.0,
-    "minsimilarity": 0.0
+    "bucket_size": 25,
+    "minscore": 0.4,
+    "minsimilarity": 0.4
     }
 
     inception = {
@@ -133,24 +133,23 @@ def write_REINVENT_config(reinvent_dir, reinvent_env, output_dir, conf_filename,
     predictive_component = {
         "component_type": "predictive_property",
         "name": "bioactivity",
-        "weight": 2,
+        "weight": 1,
         "specific_parameters": {
             "container_type": "scikit_container",
-            "model_path": "/home/klgx638/Projects/reinvent-hitl-calibration/logp_model/rf_logp_classifier_24.pkl",
+            "model_path": "/home/klgx638/Projects/reinvent-hitl-calibration/logp_model/toy_example_OracleBased.pkl",
             "smiles": "",
-            "scikit": "classification",
+            "scikit": "regression",
             "descriptor_type": "ecfp_counts",
             "size": 2048,
             "radius": 3,
             "selected_feat_idx": "none",
             "transformation": {
-                "transformation_type": "no_transformation"
-                #"transformation_type": "double_sigmoid",
-                #"high": 2,
-                #"low": 1,
-                #"coef_div": 4,
-                #"coef_si": 20,
-                #"coef_se": 20
+                "transformation_type": "double_sigmoid",
+                "high": 4,
+                "low": 2,
+                "coef_div": 3.0,
+                "coef_si": 10,
+                "coef_se": 10
             }
         }
     }
@@ -173,7 +172,7 @@ def write_REINVENT_config(reinvent_dir, reinvent_env, output_dir, conf_filename,
         #component_rotatable_bonds,
         #component_num_rings,
         predictive_component,
-        component_qed
+        #component_qed
     ]
     }
 
