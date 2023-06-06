@@ -32,3 +32,6 @@ def fingerprints_from_mol(mol, type = "counts", size = 2048, radius = 3):
                 nfp[i, nidx] += int(v)
     
     return nfp
+
+def double_sigmoid(x, low, high, alpha_1, alpha_2):
+    return 10**(x*alpha_1)/(10**(x*alpha_1)+10**(low*alpha_1)) - 10**(x*alpha_2)/(10**(x*alpha_2)+10**(high*alpha_2))
