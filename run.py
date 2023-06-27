@@ -13,7 +13,7 @@ from numpy.random import default_rng
 from utils import fingerprints_from_mol
 from scripts.simulated_expert import ActivityEvaluationModel, logPEvaluationModel
 from scripts.write_config import write_REINVENT_config
-from bioactivity_models.RandomForest import RandomForestReg
+from models.RandomForest import RandomForestReg
 from scripts.acquisition import select_query
 
 def do_run(seed, dirname, init_model_path, K = 2, acquisition = None, sigma_noise = 0.0, T = 10, n_queries = 30):
