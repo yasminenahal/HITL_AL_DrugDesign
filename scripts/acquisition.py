@@ -11,7 +11,12 @@ def local_idx_to_fulldata_idx(N, selected_feedback, idx):
     mask = np.ones(N, dtype=bool)
     mask[selected_feedback] = False
     pred_idx = all_idx[mask]
-    return pred_idx[idx]
+    try:
+        pred_idx[idx]
+        return pred_idx[idx]
+    except:
+        valid_idx = [i if 0 <= i < len(pred_idx) else len(pred_idx) - 1 for i in idx]
+        return pred_idx[valid_idx]
 
 def epig(data, n, smiles, fit, selected_feedback, is_counts = True, rng = None, t = None):
     """
@@ -22,8 +27,9 @@ def epig(data, n, smiles, fit, selected_feedback, is_counts = True, rng = None, 
     is_counts: depending on whether the model was fitted on counts (or binary) molecular features
     """
     N = len(data)
+    data = data.sample(frac = 0.2).sort_index()
     mols_pool = [Chem.MolFromSmiles(s) for s in data.SMILES]
-    mols_target = [Chem.MolFromSmiles(s) for s in smiles]
+    mols_target = [Chem.MolFromSmiles(s) for s in smiles[:1000]]
     # calculate fps for the pool molecules
     fps_pool = fingerprints_from_mol(mols_pool)
     if not is_counts:
