@@ -136,7 +136,7 @@ def write_REINVENT_config(reinvent_dir, reinvent_env, output_dir, conf_filename,
         "weight": 1,
         "specific_parameters": {
             "container_type": "scikit_container",
-            "model_path": "/home/klgx638/Projects/reinvent-hitl-calibration/logp_model/toy_example_OracleBased.pkl",
+            "model_path": "/home/klgx638/Projects/reinvent-hitl-calibration/logp_model/toy_example_OracleBased_CV.pkl",
             "smiles": "",
             "scikit": "regression",
             "descriptor_type": "ecfp_counts",
@@ -160,6 +160,16 @@ def write_REINVENT_config(reinvent_dir, reinvent_env, output_dir, conf_filename,
         "weight": 1           
     }
 
+    component_similartiy = {
+        "component_type": "tanimoto_similarity",
+        "name": "Tanimoto Similarity",
+        "weight": 1,
+        "specific_parameters": {
+            "smiles":
+                []
+        }
+    }
+
     scoring_function = {
     "name": "custom_product",
     "parallel": True,
@@ -171,7 +181,8 @@ def write_REINVENT_config(reinvent_dir, reinvent_env, output_dir, conf_filename,
         #component_psa,
         #component_rotatable_bonds,
         #component_num_rings,
-        predictive_component,
+        predictive_component
+        #component_similartiy
         #component_qed
     ]
     }
@@ -191,7 +202,7 @@ def write_REINVENT_config(reinvent_dir, reinvent_env, output_dir, conf_filename,
     configuration["parameters"]["reinforcement_learning"] = {
         "prior": os.path.join(reinvent_dir, "data/random.prior.new"),
         "agent": os.path.join(reinvent_dir, "data/random.prior.new"),
-        "n_steps": 100,
+        "n_steps": 250,
         "sigma": 128,
         "learning_rate": 0.0001,
         "batch_size": 128,
